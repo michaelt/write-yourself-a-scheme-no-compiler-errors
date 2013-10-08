@@ -19,7 +19,7 @@ actOnArgs (arg1:arg2:_) = case readMaybe arg2 :: Maybe Int of
     Nothing -> do putStrLn $ unwords [ show arg1
                                      , "is a String but whatever" 
                                      , arg2
-                                     , "may be, it\'s is not a number"
+                                     , "may be, it\'s not a number"
                                      ]
                   putStrLn usage
     Just n  -> putStrLn (unwords (replicate n arg1))
