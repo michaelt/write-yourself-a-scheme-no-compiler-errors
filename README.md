@@ -6,4 +6,5 @@ write-yourself-a-scheme-no-compiler-errors
 The errors involving the Read type class were very distracting;
 
 I have left a warning about overlapping pattern matches since 
-it is a worthwhile exercise to figure it out.
+it is just a warning -- and it is clearly a worthwhile exercise to 
+figure it out.
