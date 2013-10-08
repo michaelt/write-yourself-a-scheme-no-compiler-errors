@@ -14,7 +14,7 @@ import Text.ParserCombinators.Parsec hiding (spaces)
 
 main :: IO ()
 main = do args <- getArgs
-          case args of []     -> putStrLn "No args!"
+          case args of []     -> putStrLn "No lisp symbol!"
                        expr:_ -> putStrLn (readExpr expr)
 
 symbol :: Parser Char
