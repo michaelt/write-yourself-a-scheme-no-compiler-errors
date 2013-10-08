@@ -8,13 +8,13 @@ import Text.Read (readMaybe)
 
 main :: IO ()
 main = do args <- getArgs 
-          let outs = outStrings args
+          let outs = handleArgs args
           mapM_ putStrLn outs
 
-outStrings :: [String] -> [String]
-outStrings []            = ["No arguments!", usage]
-outStrings [arg]         = [arg ++ " is a String, but we also need a number", usage]
-outStrings (arg1:arg2:_) = case readMaybe arg2 :: Maybe Int of 
+handleArgs :: [String] -> [String]
+handleArgs []            = ["No arguments!", usage]
+handleArgs [arg]         = [arg ++ " is a String, but we also need a number", usage]
+handleArgs (arg1:arg2:_) = case readMaybe arg2 :: Maybe Int of 
               Nothing -> [unwords [ show arg1
                                   , "is a String but whatever" 
                                   , arg2
