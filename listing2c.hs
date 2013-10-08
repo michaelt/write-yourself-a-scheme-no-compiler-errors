@@ -1,15 +1,27 @@
 module Main where
 import System.Environment
 import Text.Read (readMaybe)
+
+-- in ghci
+-- type 
+-- >>> :main baah 3
+
 main :: IO ()
 main = do args <- getArgs 
           actOnArgs args
 
 actOnArgs :: [String] -> IO ()
-actOnArgs []            = putStrLn ("No arguments!\n" ++ usage)
-actOnArgs [arg]         = putStrLn (arg ++ " is nice, but we need *two* arguments\n" ++ usage)
-actOnArgs (arg1:arg2:_) = case readMaybe arg2 :: Maybe Int of -- signature can be inferred from 'replicate'
-    Nothing -> putStrLn ("\"" ++ arg1 ++ "\" is valid but " ++ arg2 ++ " is not a numeral")
+actOnArgs []            = do putStrLn "No arguments!" 
+                             putStrLn usage
+actOnArgs [arg]         = do putStrLn $ arg ++ " is a String, but we also need a number" 
+                             putStrLn usage
+actOnArgs (arg1:arg2:_) = case readMaybe arg2 :: Maybe Int of 
+    Nothing -> do putStrLn $ unwords [ show arg1
+                                     , "is a String but whatever" 
+                                     , arg2
+                                     , "may be, it\'s is not a number"
+                                     ]
+                  putStrLn usage
     Just n  -> putStrLn (unwords (replicate n arg1))
 
 usage :: String
