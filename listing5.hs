@@ -2,7 +2,7 @@
 module Main where
 import Control.Monad
 import System.Environment
-import Control.Monad.Error
+import Control.Monad.Except
 import Text.ParserCombinators.Parsec hiding (spaces)
 
 main :: IO ()
@@ -142,9 +142,7 @@ showError (Parser parseErr) = "Parse error at " ++ show parseErr
 
 instance Show LispError where show = showError
 
-instance Error LispError where
-     noMsg = Default "An error has occurred"
-     strMsg = Default
+
 
 type ThrowsError = Either LispError
 

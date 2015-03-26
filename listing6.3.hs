@@ -3,7 +3,7 @@
 module Main where
 import Control.Monad
 import System.Environment
-import Control.Monad.Error
+import Control.Monad.Except
 import Text.ParserCombinators.Parsec hiding (spaces)
 
 main :: IO ()
@@ -175,9 +175,9 @@ car badArgList = throwError $ NumArgs 1 badArgList
 
 cdr :: [LispVal] -> ThrowsError LispVal
 cdr [List (x : xs)] = return $ List xs
-cdr [DottedList (_ : xs) x] = return $ DottedList xs x
 cdr [DottedList [xs] x] = return x
-cdr [badArg] = throwError $ TypeMismatch "pair" badArg
+cdr [DottedList (_ : xs) x] = return $ DottedList xs x
+cdr (badArg:[]) = throwError $ TypeMismatch "pair" badArg
 cdr badArgList = throwError $ NumArgs 1 badArgList
 
 cons :: [LispVal] -> ThrowsError LispVal
@@ -221,9 +221,6 @@ showError (Parser parseErr) = "Parse error at " ++ show parseErr
 
 instance Show LispError where show = showError
 
-instance Error LispError where
-     noMsg = Default "An error has occurred"
-     strMsg = Default
 
 type ThrowsError = Either LispError
 

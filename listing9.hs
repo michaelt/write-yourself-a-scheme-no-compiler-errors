@@ -3,7 +3,7 @@
 module Main where
 import Control.Monad
 import System.Environment
-import Control.Monad.Error
+import Control.Monad.Except
 import Data.IORef
 import Text.ParserCombinators.Parsec hiding (spaces)
 import System.IO hiding (try)
@@ -215,8 +215,8 @@ car badArgList = throwError $ NumArgs 1 badArgList
 
 cdr :: [LispVal] -> ThrowsError LispVal
 cdr [List (x : xs)] = return $ List xs
-cdr [DottedList (_ : xs) x] = return $ DottedList xs x
 cdr [DottedList [xs] x] = return x
+cdr [DottedList (_ : xs) x] = return $ DottedList xs x
 cdr [badArg] = throwError $ TypeMismatch "pair" badArg
 cdr badArgList = throwError $ NumArgs 1 badArgList
 
@@ -279,10 +279,6 @@ showError (Parser parseErr) = "Parse error at " ++ show parseErr
 
 instance Show LispError where show = showError
 
-instance Error LispError where
-     noMsg = Default "An error has occurred"
-     strMsg = Default
-
 type ThrowsError = Either LispError
 
 trapError action = catchError action (return . show)
@@ -325,14 +321,14 @@ primitiveBindings = nullEnv >>= (flip bindVars $ map makePrimitiveFunc primitive
     where makePrimitiveFunc (var, func) = (var, PrimitiveFunc func)
 
 
-type IOThrowsError = ErrorT LispError IO
+type IOThrowsError = ExceptT LispError IO
 
 liftThrows :: ThrowsError a -> IOThrowsError a
 liftThrows (Left err) = throwError err
 liftThrows (Right val) = return val
 
 runIOThrows :: IOThrowsError String -> IO String
-runIOThrows action = runErrorT (trapError action) >>= return . extractValue
+runIOThrows action = runExceptT (trapError action) >>= return . extractValue
 
 isBound :: Env -> String -> IO Bool
 isBound envRef var = readIORef envRef >>= return . maybe False (const True) . lookup var
